@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #define MAX_SIZE 100
-char operator[MAX_SIZE];
+char *operator[MAX_SIZE];
 int top;
 int stack_size;
 
@@ -21,7 +21,7 @@ int isempty(){
 	return (top == -1);
 }
 
-void push(char item){
+void push(char *item){
 	if(isfull()){
 		printf(" Full !\n");
 		return;
@@ -40,10 +40,13 @@ int pop(){
 int istop(){
 	return operator[top];
 }
+char *chr_top(){
+	return operator[top];
+}
 void inToPos(char *infix, char *posfix){
 	int priority = 0;
 	int cnt=0;
-	char token;
+	char *token;
 	int continuity = 0;
 	for(int i=0; i<strlen(infix);i++){
 		token=infix[i];
@@ -99,31 +102,97 @@ void inToPos(char *infix, char *posfix){
 	}while(!isempty());
 }
 	
-int tokenalize(char *posfix){
-	operator[0] = '\0';
-	int i = 0;
-	int cnt = 0;
-	char scan;
-	char token[20];
-	while(i < strlen(posfix)){
-		scan = posfix[i];
-		
-		i++;
+char *chr_pop(){
+	if(isempty()){
+		printf("Empty!\n");
+		return NULL;
 	}
-	
-	return 0;
+	return operator[top--];
+}
+
+char *tokArr[200] = { NULL ,};
+
+void tokenalize(char *posfix){
+
+	int i =0;
+	char *temp = strtok(posfix," ");
+	while(temp != NULL){
+		tokArr[i] = temp;
+		i++;
+		temp = strtok(NULL," ");
+	}
 }
 
 
+void cal(){
+	char *token;
+	int temp;
+	int pop1,pop2,result = 0;
+	char *chr_result;
+	for(int i = 0; tokArr[i] != NULL;i++){
+			token = tokArr[i];
+			printf("now token : %s\n\n",token);
+			if(isdigit(*tokArr[i])){
+				push(token);
+				printf("now top ISDIGIT_push: %s \n\n",chr_top());
+			}
+			else{
+				pop1 = atoi(chr_pop());
+				pop2 = atoi(chr_pop());
+				printf(" pop1 = %d , pop2 = %d \n",pop1,pop2);
+				printf("Pre Cal TOP : %s\n\n",chr_top());
+				
+				switch(*token){
+					case '+':
+						result = pop2 + pop1;
+						sprintf(chr_result,"%d",result);
+						printf("%s \n",chr_result);
+						printf("now top pre_push: %s \n\n",chr_top());
+						push(chr_result);
+						printf("now top aft_push : %s \n\n",chr_top());
+						break;
+						/*
+					case '-':
+						result = pop2 - pop1;
+						sprintf(chr_result,"%d",result);
+						printf("%s \n",chr_result);
+						push(chr_result);
+						*/
+						
+					case '*':
+						result = pop2 * pop1;
+						printf("now top result: %s \n\n",chr_top());
+						sprintf(chr_result,"%d",result);
+						printf("now top sprintf: %s \n\n",chr_top());
+						printf("%s \n",chr_result);
+						printf("now top pre_push: %s \n\n",chr_top());
+						push(chr_result);
+						printf("now top aft_push: %s \n\n",chr_top());
+						break;
+						
+						/*
+					case '/':
+						result = pop2 / pop1;
+						sprintf(chr_result,"%d",result);
+						printf("%s \n",chr_result);
+						push(chr_result);
+						*/
+				}
+			}
+	}
+}
+
 int main(void){
 
-
-	char infix[200] = "5*(10+20)+5",posfix[200];
+	char infix[200] = "(5+5*9+5*6)",posfix[200];
 
 	init(20);
 	inToPos(infix,posfix);
-
-	tokenalize(posfix);
 	printf("infix : %s \nposfix : %s\n",infix,posfix);
+	tokenalize(posfix);
+	init(20);
+	cal();
 
-return 0; }
+
+return 0;
+}
