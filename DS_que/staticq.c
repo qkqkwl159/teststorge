@@ -7,7 +7,7 @@
 	 init(), enque(), deque(), isfull(), isempty()
 	 */
 
-typedef int Data;
+typedef char Data;
 typedef struct{
 	int front;
 	int rear;
@@ -27,7 +27,7 @@ int isempty(que *q){
 	return (q->front == q->rear);
 }
 
-void enque(que *q, int item){
+void enque(que *q, Data item){
 	if(isfull(q)){
 		printf("Full\n");
 		return;
@@ -40,6 +40,7 @@ Data deque(que *q){
 		printf("Empty\n");
 		return 0;
 	}
+	LOG("DEQUE\n");
 	return q->arr[q->front++];
 }
 
@@ -51,11 +52,13 @@ int main(int argc, char *argv[]){
 	init(&q);
 
 	while(!isfull(&q)){
-		scanf("%d",&inputData);
+		scanf("%s",&inputData);
 		enque(&q,inputData);
+		LOG("ENQUE\n");
+
 	}
 	while(!isempty(&q)){
-		printf("\n%d\n",deque(&q));
+		printf("\n%s\n",deque(&q));
 	}
 
 
