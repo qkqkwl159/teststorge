@@ -3,16 +3,18 @@
 #define DEBUG
 #include "log.h"
 
-typedef int Data;
+/*
+	 insertLast, insertFirst, insertNode,
+	 freeList, printList, addNewNode,
+	 deleteLast, deleteFirst, deleteNode
+	 */
+
+typedef char* Data;
 typedef struct Node{
 	Data value;
 	struct Node *next;
 }Node;
 
-/*
-	 insertLadt, insertFirst, insertNode
-	 freeList, printList, deleteNode
-	 */
 Node* addNewNode(Data value){
 	Node* newNode = (Node*)malloc(sizeof(Node));
 	newNode->value = value;
@@ -30,10 +32,9 @@ void insertFirst(Node* head,Data value){
 
 void insertLast(Node* head,Data value){
 	if(head->next == NULL){
-		LOG("InsertLast\n");
 		Node* newNode = addNewNode(value);
 		newNode->next = head->next;
-		
+
 		head->next = newNode;
 	}
 	else{
@@ -42,13 +43,15 @@ void insertLast(Node* head,Data value){
 			curr = curr->next;
 		}
 		Node* newNode = addNewNode(value);
+		newNode->next = curr->next;
+
 		curr->next = newNode;
 	}
 }
-		
-void insertNode(Node* head, Data value, int index){
-	Node* newNode = addNewNode(value);
+
+void insertNode(Node* head, Data value,int index){
 	Node* curr = head;
+	Node* newNode = addNewNode(value);
 	while(curr != NULL && index > 0){
 		index--;
 		curr = curr->next;
@@ -59,15 +62,13 @@ void insertNode(Node* head, Data value, int index){
 }
 
 void deleteFirst(Node* head){
-		LOG("DELETE \n");
-		Node* rmNode = head->next;
-		if(rmNode == NULL){
-			printf("List Empty\n");
-			return;
-		}
-		head->next = rmNode->next;
-
-		free(rmNode);
+	Node* rmNode = head->next;
+	if(rmNode == NULL){
+		printf("List Empty\n");
+		return;
+	}
+	head->next = rmNode->next;
+	free(rmNode);
 }
 
 void deleteLast(Node* head){
@@ -79,14 +80,15 @@ void deleteLast(Node* head){
 	curr->next = rmNode->next;
 	free(rmNode);
 }
-		 
+
 void deleteNode(Node* head,int index){
 	Node* curr = head;
+	Node* rmNode;
 	while(curr->next->next != NULL && index > 0){
 		index--;
 		curr = curr->next;
 	}
-	Node* rmNode = curr->next;
+	rmNode = curr->next;
 	curr->next = rmNode->next;
 	free(rmNode);
 }
@@ -94,10 +96,10 @@ void deleteNode(Node* head,int index){
 void printList(Node* head){
 	Node* curr = head->next;
 	while(curr != NULL){
-		printf("%d -> ",curr->value);
+		printf("%s -> ",curr->value);
 		curr = curr->next;
 	}
-	printf("\b\b\b     \n");
+	printf("\b\b\b    \n");
 }
 
 void freeList(Node* head){
@@ -110,23 +112,29 @@ void freeList(Node* head){
 	}
 }
 
-
 int main(int argc, char* argv[]){
 
-	Node* head = addNewNode(0);;
+	Node* head = addNewNode(0);
 
-	insertLast(head,10);
-	insertLast(head,20);
-	insertLast(head,30);
-	insertLast(head,40);
-	insertLast(head,50);
+	insertLast(head,"Tue");
+	insertLast(head,"Fri");
+	insertLast(head,"Sat");
+	insertFirst(head,"Mon");
+	insertNode(head,"Wed",2);
+	insertNode(head,"Thu",3);
+	insertLast(head,"Sun");
 	printList(head);
+
+	LOG("======= INSERT ======\n");
+
+	deleteFirst(head);
+	deleteFirst(head);
+	deleteLast(head);
 	deleteLast(head);
 	deleteNode(head,2);
 
-	
+
 	printList(head);
 	freeList(head);
-
 	return 0;
 }
