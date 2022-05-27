@@ -105,11 +105,13 @@ void yosupus(Node* head, Node* tail, int head_count, int term){
 
 	Node* delRtn = deleteNode(&head,&tail,head,term);
 	arr[count++] = delRtn->value;
+	printList(head,tail);
 
 	for(int i = 0; i<(head_count -1 );i++){
 		
 		delRtn = deleteNode(&head,&tail,delRtn->next,term);
 		arr[count++] = delRtn->value;
+		printList(head,tail);
 		
 	}
 	printarr(arr,head_count);
